@@ -149,7 +149,31 @@ public class GameController : MonoBehaviour
 
     public void MakeOptimalMove()
     {
-        int bestScore = int.MinValue; // Maximizer starts with negative infinity
+        // Add randomness to make the AI less perfect
+        float chanceToMakeRandomMove = 0.5f; // 30% chance for a random move
+        if (Random.value < chanceToMakeRandomMove)
+        {
+            // Pick a random valid move
+            List<int> availableMoves = new List<int>();
+            for (int i = 0; i < buttonList.Length; i++)
+            {
+                if (buttonList[i].text == "") // Empty spot
+                {
+                    availableMoves.Add(i);
+                }
+            }
+
+            if (availableMoves.Count > 0)
+            {
+                int randomMove = availableMoves[Random.Range(0, availableMoves.Count)];
+                buttonList[randomMove].text = playerSide;
+                EndTurn();
+                return;
+            }
+        }
+
+        // If not making a random move, use Minimax for the best move
+        int bestScore = int.MinValue;
         int bestMove = -1;
 
         for (int i = 0; i < buttonList.Length; i++)
